@@ -3,6 +3,7 @@ import { index as indexTickets } from "../../api/tickets.ts";
 import { index as indexAgentes } from "../../api/agente.ts";
 import { store as storeSolicitud } from "../../api/solicitudes.ts";
 import { Link } from 'react-router-dom';
+import { formatTimestamp } from "../../utils/dateFormatter.ts";
 
 type Ticket = {
     id: number;
@@ -72,18 +73,6 @@ const Ticket = () => {
 
     const getAgenteName = (id: number) => {
         return agentes[id] || 'Desconocido';
-    }
-
-    function formatTimestamp(timestamp: string) {
-        const date = new Date(timestamp);
-        return date.toLocaleString('es-ES', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-        });
     }
 
     const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
