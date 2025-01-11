@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { index as indexTickets, store as storeTickets } from "../../api/tickets.ts";
-import { index as indexAgentes } from "../../api/agente.ts";
+import { index as indexAgentes, store as storeAgente, destroy as destroyAgente } from "../../api/agente.ts";
 import { Link } from 'react-router-dom';
 import { formatTimestamp } from "../../utils/dateFormatter.ts";
 import Navbar from '../../Components/Navbar.tsx';
@@ -23,14 +23,27 @@ type Agente = {
     correo: string;
 }
 
+type NewAgente = {
+    nombre: string;
+    apellido: string;
+    correo: string;
+}
+
 const Ticket = () => {
 
     const [tableData, setTableData] = useState<Ticket[]>([]);
     const [error, setError] = useState<string | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
     const [agentes, setAgentes] = useState<Record<number, string>>({});
+    /* nuevo ticket form */
     const [solicitudId, setSolicitudId] = useState<number>(0);
     const [agenteId, setAgenteId] = useState<number>(0);
+    /* nuevo agente form */
+    const [nuevoAgente, setNuevoAgente] = useState<NewAgente>({
+        nombre: '',
+        apellido: '',
+        correo: ''
+    });
 
     useEffect(() => {
         if (notification) {
@@ -90,21 +103,66 @@ const Ticket = () => {
                 });
                 setAgentes(map);
                 setTableData(data);
+                clearForms();
             }
+        })
+    }
+
+    const handleSubmitAgentes = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if(!nuevoAgente) {
+            return;
+        }
+        storeAgente(nuevoAgente).then((data)=>{
+            if(data) {
+                console.log(`agentes response: ${JSON.stringify(data)}`);
+                const map: Record<number, string> = {};
+                data.forEach((ticket) => {
+                    map[ticket.id] = `${ticket.nombre} ${ticket.apellido}`;
+                });
+                setAgentes(map);
+                setNotification("Agente creado con éxito");
+                clearForms();
+            }
+        })
+    }
+
+    const deleteAgent = (id: number) => {
+        destroyAgente(id).then(()=> {
+            setAgentes((prev) => {
+                const updated = { ...prev };
+                delete updated[id];
+                return updated;
+            });
+
+            setNotification("Agente eliminado con éxito");
+        })
+    }
+
+    const clearForms= ()=> {
+        setAgenteId(0);
+        setSolicitudId(0);
+        setNuevoAgente({
+            nombre: '',
+            apellido: '',
+            correo: ''
         })
     }
 
     return (
         <div className={styles['ticket']}>
             <Navbar />
-            <div className="agentes">
+            {notification && <div className="notification info-message">{notification}</div>}
+            {error && <div className="notification error-message">{error}</div>}
+            <div className={styles['agentes']}>
                 <h2>Tabla de agentes</h2>
-                <div className="tabla-agentes-content">
+                <div className={styles['agentes-tabla']}>
                     <table>
                         <thead>
                             <tr>
                                 <th>id</th>
                                 <th>Agente</th>
+                                <th>Accion</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -113,6 +171,13 @@ const Ticket = () => {
                                 <tr key={id}>
                                     <td>{id}</td>
                                     <td>{nombre}</td>
+                                    <td>
+                                        <button
+                                            onClick={() => deleteAgent(Number(id))}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
                                 </tr>
                             ))
                         }
@@ -120,9 +185,44 @@ const Ticket = () => {
                     </table>
                 </div>
             </div>
+            <div className={styles['agentes-form']}>
+                <form onSubmit={handleSubmitAgentes}>
+                    <fieldset>
+                        <legend>Crear nuevo agente</legend>
+                        <label htmlFor="nombre-agente">Nombre</label>
+                        <input
+                            type="text"
+                            id="nombre-agente"
+                            name="nombre-agente"
+                            placeholder="Ingrese nombre"
+                            value={nuevoAgente.nombre}
+                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, nombre: e.target.value}))}
+                        />
+
+                        <label htmlFor="apellido-agente">Apellido</label>
+                        <input
+                            type="text"
+                            id="apellido-agente"
+                            name="apellido-agente"
+                            placeholder="Ingrese apellido"
+                            value={nuevoAgente.apellido}
+                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, apellido: e.target.value}))}
+                        />
+
+                        <label htmlFor="correo-agente">Correo</label>
+                        <input
+                            type="text"
+                            id="correo-agente"
+                            name="correo-agente"
+                            placeholder="Ingrese correo"
+                            value={nuevoAgente.correo}
+                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, correo: e.target.value}))}
+                        />
+                        <button type="submit" className="button button-green">Crear</button>
+                    </fieldset>
+                </form>
+            </div>
             <h2>Tabla de Tickets</h2>
-            {notification && <div className="notification info-message">{notification}</div>}
-            {error && <div className="notification error-message">{error}</div>}
             <div className={styles['ticket-table']}>
                 <table>
                     <thead>

@@ -72,6 +72,11 @@ table tr:nth-child(even):hover {
 
 /* notifications */
 .notification {
+    display: block;
+    position: fixed;
+    background-color: white;
+    top: 10px;
+    right: 10px;
     padding: 10px;
     font-size: 16px;
     font-weight: 600;
