@@ -98,19 +98,27 @@ const Ticket = () => {
             apellido: apellido,
             correo: correo
         }
-        console.log(newSolicitud);
         storeSolicitud(newSolicitud).then((data: string) => {
-            setNotification(data);
+            console.log(JSON.stringify(data));
+            setNotification("Solicitud creada con exito");
+            cleanForm();
         });
 
     }
 
+    const cleanForm = () => {
+        setNombre('');
+        setApellido('');
+        setCorreo('');
+    }
+
 
     return (
-        <div>
-            <h1>Ticket</h1>
+        <div className="content">
+            <h1>Tabla de Tickets</h1>
             <div className="table-content">
-                {error && <div>{error}</div>}
+                {notification && <div className="notification info-message">{notification}</div>}
+                {error && <div className="notification error-message">{error}</div>}
                 <table className="table">
                     <thead>
                         <tr>
@@ -147,14 +155,34 @@ const Ticket = () => {
                     <fieldset>
                         <legend>Nuevo caso</legend>
                         <label htmlFor="nombre">Nombre</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="nombre" onChange={(e)=> setNombre(e.currentTarget.value)}/>
+                        <input
+                            type="text"
+                            id="nombre"
+                            name="nombre"
+                            placeholder="nombre"
+                            value={nombre}
+                            onChange={(e)=> setNombre(e.currentTarget.value)}
+                        />
 
                         <label htmlFor="apellido">Apellido</label>
-                        <input type="text" id="apellido" name="apellido" placeholder="apellido" onChange={(e)=> setApellido(e.currentTarget.value)}/>
+                        <input
+                            type="text"
+                            id="apellido"
+                            name="apellido"
+                            placeholder="apellido"
+                            value={apellido}
+                            onChange={(e)=> setApellido(e.currentTarget.value)}
+                        />
 
                         <label htmlFor="correo">Correo</label>
-                        <input type="email" id="correo" name="correo" placeholder="correo" onChange={(e)=> setCorreo(e.currentTarget.value)}/>
-                        {notification && <div>{notification}</div>}
+                        <input
+                            type="email"
+                            id="correo"
+                            name="correo"
+                            placeholder="correo"
+                            value={correo}
+                            onChange={(e)=> setCorreo(e.currentTarget.value)}
+                        />
                         <button type="submit">Crear</button>
                     </fieldset>
                 </form>

@@ -1,3 +1,9 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 /* tables */
 table {
     border: 1px solid rgb(212, 212, 212);
@@ -26,4 +32,23 @@ table tr:nth-child(even) {
 }
 table tr:nth-child(even):hover {
     background-color: #f3f3f3;
+}
+
+/* notifications */
+.notification {
+    padding: 10px;
+    font-size: 16px;
+    font-weight: 600;
+    border-radius: 5%;
+    max-width: 250px;
+}
+/* error message */
+.error-message {
+    color: #BF0811;
+    border: 2px solid #BF0811;
+}
+/* information message */
+.info-message {
+    color: #009045;
+    border: 2px solid #009045;
 }
