@@ -154,73 +154,75 @@ const Ticket = () => {
             <Navbar />
             {notification && <div className="notification info-message">{notification}</div>}
             {error && <div className="notification error-message">{error}</div>}
-            <div className={styles['agentes']}>
-                <h2>Tabla de agentes</h2>
-                <div className={styles['agentes-tabla']}>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>id</th>
-                                <th>Agente</th>
-                                <th>Accion</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {
-                            Object.entries(agentes).map(([id, nombre]) => (
-                                <tr key={id}>
-                                    <td>{id}</td>
-                                    <td>{nombre}</td>
-                                    <td>
-                                        <button
-                                            onClick={() => deleteAgent(Number(id))}
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </td>
+            <div className={styles['agentes-content']}>
+                <div className={styles['agentes']}>
+                    <h2>Tabla de agentes</h2>
+                    <div className={styles['agentes-tabla']}>
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>Agente</th>
+                                    <th>Accion</th>
                                 </tr>
-                            ))
-                        }
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            {
+                                Object.entries(agentes).map(([id, nombre]) => (
+                                    <tr key={id}>
+                                        <td>{id}</td>
+                                        <td>{nombre}</td>
+                                        <td>
+                                            <button
+                                                onClick={() => deleteAgent(Number(id))}
+                                            >
+                                                Eliminar
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            }
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
-            </div>
-            <div className={styles['agentes-form']}>
-                <form onSubmit={handleSubmitAgentes}>
-                    <fieldset>
-                        <legend>Crear nuevo agente</legend>
-                        <label htmlFor="nombre-agente">Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre-agente"
-                            name="nombre-agente"
-                            placeholder="Ingrese nombre"
-                            value={nuevoAgente.nombre}
-                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, nombre: e.target.value}))}
-                        />
+                <div className={styles['agentes-form']}>
+                    <form onSubmit={handleSubmitAgentes}>
+                        <fieldset>
+                            <legend>Crear nuevo agente</legend>
+                            <label htmlFor="nombre-agente">Nombre</label>
+                            <input
+                                type="text"
+                                id="nombre-agente"
+                                name="nombre-agente"
+                                placeholder="Ingrese nombre"
+                                value={nuevoAgente.nombre}
+                                onChange={(e)=> setNuevoAgente((prev)=>({...prev, nombre: e.target.value}))}
+                            />
 
-                        <label htmlFor="apellido-agente">Apellido</label>
-                        <input
-                            type="text"
-                            id="apellido-agente"
-                            name="apellido-agente"
-                            placeholder="Ingrese apellido"
-                            value={nuevoAgente.apellido}
-                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, apellido: e.target.value}))}
-                        />
+                            <label htmlFor="apellido-agente">Apellido</label>
+                            <input
+                                type="text"
+                                id="apellido-agente"
+                                name="apellido-agente"
+                                placeholder="Ingrese apellido"
+                                value={nuevoAgente.apellido}
+                                onChange={(e)=> setNuevoAgente((prev)=>({...prev, apellido: e.target.value}))}
+                            />
 
-                        <label htmlFor="correo-agente">Correo</label>
-                        <input
-                            type="text"
-                            id="correo-agente"
-                            name="correo-agente"
-                            placeholder="Ingrese correo"
-                            value={nuevoAgente.correo}
-                            onChange={(e)=> setNuevoAgente((prev)=>({...prev, correo: e.target.value}))}
-                        />
-                        <button type="submit" className="button button-green">Crear</button>
-                    </fieldset>
-                </form>
+                            <label htmlFor="correo-agente">Correo</label>
+                            <input
+                                type="text"
+                                id="correo-agente"
+                                name="correo-agente"
+                                placeholder="Ingrese correo"
+                                value={nuevoAgente.correo}
+                                onChange={(e)=> setNuevoAgente((prev)=>({...prev, correo: e.target.value}))}
+                            />
+                            <button type="submit" className="button button-green">Crear</button>
+                        </fieldset>
+                    </form>
+                </div>
             </div>
             <h2>Tabla de Tickets</h2>
             <div className={styles['ticket-table']}>
