@@ -1,3 +1,40 @@
 .ticket {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 80%;
+}
+
+.ticket-table {
+    height: 350px;
+    overflow-y: auto;
+}
+
+.ticket-form {
+    min-width: 350px;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.ticket-form form {
+    min-width: 350px;
+}
+
+.ticket-form fieldset {
+    padding: 20px;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.ticket-form fieldset input {
+    margin: 8px;
+    height: 35px;
+    width: 250px;
 }

@@ -48,25 +48,25 @@ const Solicitudes = () => {
 
     }, [])
 
-        const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
-            e.preventDefault();
-            const newSolicitud: newSolicitud = {
-                nombre: nombre,
-                apellido: apellido,
-                correo: correo
-            }
-            storeSolicitud(newSolicitud).then((data) => {
-                setSolicitudes(data);
-                setNotification("Solicitud creada con exito");
-                cleanForm();
-            });
+    const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        const newSolicitud: newSolicitud = {
+            nombre: nombre,
+            apellido: apellido,
+            correo: correo
         }
+        storeSolicitud(newSolicitud).then((data) => {
+            setSolicitudes(data);
+            setNotification("Solicitud creada con exito");
+            cleanForm();
+        });
+    }
 
-        const cleanForm = () => {
-            setNombre('');
-            setApellido('');
-            setCorreo('');
-        }
+    const cleanForm = () => {
+        setNombre('');
+        setApellido('');
+        setCorreo('');
+    }
 
     return (
         <div className={styles['solicitudes']}>
