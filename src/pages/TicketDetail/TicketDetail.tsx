@@ -1,8 +1,9 @@
 import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import { show as showTicket } from '../../api/tickets';
+import { show as showTicket, update as updateTicket } from '../../api/tickets';
 import { formatTimestamp } from "../../utils/dateFormatter.ts";
 import { index as showComments, store as storeComments } from '../../api/tickets-comments';
+import dayjs from 'dayjs';
 
 
 type solicitud = {
@@ -24,7 +25,7 @@ type ticket = {
     solicitud_id: number;
     agente_id: number;
     estado: string;
-    fecha_cierre: string;
+    fecha_cierre: string | null;
     created_at: string;
     updated_at: string;
     solicitud: solicitud;
@@ -53,7 +54,8 @@ const TicketDetail = () => {
     const [formComentario, setFormComentario] = useState<newTicketComment>({
         agente_id: 0,
         comentario: ''
-    })
+    });
+    const [estadoSelected, setEstadoSelected] = useState<string>('');
 
     useEffect(() => {
         if (!id) {
@@ -75,14 +77,28 @@ const TicketDetail = () => {
 
     const handleComment = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (formComentario.comentario === '') {
-            return;
+        if (formComentario.comentario !== '') {
+            storeComments(Number(id), formComentario).then((data) => {
+                setComentarios((prev) => [...prev, data]);
+            });
         }
 
-        console.log(`nuevo comentario: ${JSON.stringify(formComentario)}`);
-        storeComments(Number(id), formComentario).then((data) => {
-            setComentarios((prev) => [...prev, data]);
-        });
+        if(!ticket) {
+            return
+        }
+
+        const formattedFechaCierre = estadoSelected === 'Finalizado'
+        ? dayjs().format('YYYY-MM-DD HH:mm:ss')
+        : (ticket.fecha_cierre || null);
+
+        const updatedTicket: ticket = {
+            ...ticket,
+            estado: estadoSelected,
+            fecha_cierre: formattedFechaCierre
+        };
+        updateTicket(Number(id), updatedTicket).then((data) => {
+            setTicket(data);
+        })
 
     }
 
@@ -142,8 +158,23 @@ const TicketDetail = () => {
                             onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
                                 setFormComentario((prev) => ({...prev, comentario: e.target.value}))
                             }}
+                            disabled={ticket.estado === 'Finalizado'}
                         />
-                        </div>
+                        <label htmlFor="estado">Cambiar estado:</label>
+                        <select
+                            name="estado"
+                            id="estado"
+                            value={estadoSelected}
+                            onChange={(e)=> setEstadoSelected(e.target.value)}
+                            disabled={ticket.estado === 'Finalizado'}
+                        >
+                            <option value="">Seleccione un estado</option>
+                            <option value="Creado">Creado</option>
+                            <option value="Asignado">Asignado</option>
+                            <option value="En progreso">En progreso</option>
+                            <option value="Finalizado">Finalizado</option>
+                        </select>
+                    </div>
                     <button type="submit">Comentar</button>
                 </fieldset>
             </form>

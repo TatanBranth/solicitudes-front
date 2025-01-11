@@ -5,7 +5,7 @@ type newTicket = {
     solicitud_id: number;
     agente_id: number;
     estado: string;
-    fecha_cierre: string;
+    fecha_cierre: string | null;
 }
 
 export const index = async () => {
