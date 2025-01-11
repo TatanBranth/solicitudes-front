@@ -4,6 +4,7 @@ import { show as showTicket, update as updateTicket } from '../../api/tickets';
 import { formatTimestamp } from "../../utils/dateFormatter.ts";
 import { index as showComments, store as storeComments } from '../../api/tickets-comments';
 import dayjs from 'dayjs';
+import styles from './TicketDetail.module.css';
 
 
 type solicitud = {
@@ -105,80 +106,104 @@ const TicketDetail = () => {
     if (!ticket) return <div>Cargando...</div>;
 
     return (
-        <div className='ticket-detail-content'>
-            <h1>Caso #{id}</h1>
-            <div className="solicitud">
-                <h2>Solicitante:</h2>
-                <p>Nombre: {ticket.solicitud.nombre}</p>
-                <p>Apellido: {ticket.solicitud.apellido}</p>
-                <p>Correo: {ticket.solicitud.correo}</p>
-                <p>Estado actual: {ticket.estado}</p>
-                <p>Fecha de ingreso: {ticket.created_at ? formatTimestamp(ticket.created_at): ''}</p>
-                <p>Fecha de cierre: {ticket.fecha_cierre ? formatTimestamp(ticket.fecha_cierre): ''}</p>
-            </div>
-            <div className="table-content">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>id</th>
-                            <th>Comentarios</th>
-                            <th>Agente</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            comentarios.length > 0 ?
-                            comentarios.map((row: comentario) => (
-                                <tr key={row.id}>
-                                    <td>{row.id}</td>
-                                    <td>{row.comentario}</td>
-                                    <td>{row.agente?.nombre || 'Sin agente'}</td>
-                                </tr>
-                            )):
-                            <tr key='no comentarios'>
-                                <td colSpan={3}>No hay comentarios</td>
-                            </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                    </tfoot>
-                </table>
-            </div>
-            <form onSubmit={handleComment}>
-                <fieldset className="form-comment">
-                    <legend>Nuevo comentario</legend>
-                    <div className='form-comment-fields'>
-                        <label htmlFor="comentario">Comentario: </label>
-                        <input
-                            type="text"
-                            id="comentario"
-                            name="comentario"
-                            placeholder="comentario"
-                            value={formComentario.comentario}
-                            onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
-                                setFormComentario((prev) => ({...prev, comentario: e.target.value}))
-                            }}
-                            disabled={ticket.estado === 'Finalizado'}
-                        />
-                        <label htmlFor="estado">Cambiar estado:</label>
-                        <select
-                            name="estado"
-                            id="estado"
-                            value={estadoSelected}
-                            onChange={(e)=> setEstadoSelected(e.target.value)}
-                            disabled={ticket.estado === 'Finalizado'}
-                        >
-                            <option value="">Seleccione un estado</option>
-                            <option value="Creado">Creado</option>
-                            <option value="Asignado">Asignado</option>
-                            <option value="En progreso">En progreso</option>
-                            <option value="Finalizado">Finalizado</option>
-                        </select>
+        <div className={styles['ticket-detail']}>
+            <h1 className={styles['ticket-detail-title']}>Caso #{id}</h1>
+            <div className={styles['ticket-detail-info']}>
+                <div className={styles['ticket-detail-solicitud']}>
+                    <h2>Solicitante:</h2>
+                    <div className={styles['row']}>
+                        <h3>Nombre:</h3>
+                        <p>{ticket.solicitud.nombre}</p>
                     </div>
-                    <button type="submit">Comentar</button>
-                </fieldset>
-            </form>
-            <Link to="/ticket">Volver</Link>
+                    <div className={styles['row']}>
+                        <h3>Apellido:</h3>
+                        <p>{ticket.solicitud.apellido}</p>
+                    </div>
+                    <div className={styles['row']}>
+                        <h3>Correo: </h3>
+                        <p>{ticket.solicitud.correo}</p>
+                    </div>
+                    <div className={styles['row']}>
+                        <h3>Estado actual:</h3>
+                        <p>{ticket.estado}</p>
+                    </div>
+                    <div className={styles['row']}>
+                        <h3>Fecha de ingreso: </h3>
+                        <p> {ticket.created_at ? formatTimestamp(ticket.created_at): ''}</p>
+                    </div>
+                    <div className={styles['row']}>
+                        <h3>Fecha de cierre: </h3>
+                        <p>{ticket.fecha_cierre ? formatTimestamp(ticket.fecha_cierre): ''}</p>
+                    </div>
+                </div>
+                <div className={styles['ticket-detail-comments']}>
+                    <div className={styles['ticket-detail-comments-content']}>
+                        <div className={styles['ticket-detail-table']}>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>id</th>
+                                        <th>Comentarios</th>
+                                        <th>Agente</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        comentarios.length > 0 ?
+                                        comentarios.map((row: comentario) => (
+                                            <tr key={row.id}>
+                                                <td>{row.id}</td>
+                                                <td>{row.comentario}</td>
+                                                <td>{row.agente?.nombre || 'Sin agente'}</td>
+                                            </tr>
+                                        )):
+                                        <tr key='no comentarios'>
+                                            <td colSpan={3}>No hay comentarios</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <form onSubmit={handleComment} className={styles['ticket-detail-form']}>
+                        <fieldset className={styles['ticket-detail-form-fieldset']}>
+                            <legend>Nuevo comentario</legend>
+                            <div className={styles['ticket-detail-form-fieldset-fields']}>
+                                <label htmlFor="comentario">Comentario: </label>
+                                <input
+                                    type="text"
+                                    id="comentario"
+                                    name="comentario"
+                                    placeholder="comentario"
+                                    value={formComentario.comentario}
+                                    onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                                        setFormComentario((prev) => ({...prev, comentario: e.target.value}))
+                                    }}
+                                    disabled={ticket.estado === 'Finalizado'}
+                                />
+                                <label htmlFor="estado">Cambiar estado:</label>
+                                <select
+                                    name="estado"
+                                    id="estado"
+                                    value={estadoSelected}
+                                    onChange={(e)=> setEstadoSelected(e.target.value)}
+                                    disabled={ticket.estado === 'Finalizado'}
+                                >
+                                    <option value="">Seleccione un estado</option>
+                                    <option value="Creado">Creado</option>
+                                    <option value="Asignado">Asignado</option>
+                                    <option value="En progreso">En progreso</option>
+                                    <option value="Finalizado">Finalizado</option>
+                                </select>
+                            </div>
+                            <button type="submit" className='button button-blue'>Comentar</button>
+                        </fieldset>
+                    </form>
+                </div>
+            </div>
+            <Link to="/ticket" className='button button-red'>Volver</Link>
         </div>
     );
 }

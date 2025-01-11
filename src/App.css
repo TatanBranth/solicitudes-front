@@ -6,15 +6,6 @@
     align-items: center;
 }
 
-.content-ticket, .ticket-detail-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 20px;
-}
-
-
 .form-comment {
     display: flex;
     flex-direction: column;
@@ -104,6 +95,9 @@ table tr:nth-child(even):hover {
     border: 0px solid white;
     border-radius: 5%;
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.3);
+    margin: 10px;
+    display: block;
+    align-self: center;
 }
 
 button:hover {
