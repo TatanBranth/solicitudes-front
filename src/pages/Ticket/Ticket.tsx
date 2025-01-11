@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { index as indexTickets } from "../../api/tickets.ts";
+import { index as indexTickets, store as storeTickets } from "../../api/tickets.ts";
 import { index as indexAgentes } from "../../api/agente.ts";
-import { store as storeSolicitud } from "../../api/solicitudes.ts";
 import { Link } from 'react-router-dom';
 import { formatTimestamp } from "../../utils/dateFormatter.ts";
+import Navbar from '../../Components/Navbar.tsx';
+import styles from './Ticket.module.css'
 
 type Ticket = {
     id: number;
@@ -22,11 +23,6 @@ type Agente = {
     correo: string;
 }
 
-type newSolicitud = {
-    nombre: string;
-    apellido: string;
-    correo: string;
-}
 
 const Ticket = () => {
 
@@ -34,12 +30,6 @@ const Ticket = () => {
     const [error, setError] = useState<string | null>(null);
     const [notification, setNotification] = useState<string | null>(null);
     const [agentes, setAgentes] = useState<Record<number, string>>({});
-
-    /* datos solicitante */
-    const [nombre, setNombre] = useState<string>('');
-    const [apellido, setApellido] = useState<string>('');
-    const [correo, setCorreo] = useState<string>('');
-
 
     useEffect(() => {
         if (notification) {
@@ -69,37 +59,40 @@ const Ticket = () => {
             });
             setAgentes(map);
         });
+
     }, []);
 
     const getAgenteName = (id: number) => {
         return agentes[id] || 'Desconocido';
     }
 
-    const handleForm = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        const newSolicitud: newSolicitud = {
-            nombre: nombre,
-            apellido: apellido,
-            correo: correo
-        }
-        storeSolicitud(newSolicitud).then((data: string) => {
-            console.log(JSON.stringify(data));
-            setNotification("Solicitud creada con exito");
-            cleanForm();
-        });
-
-    }
-
-    const cleanForm = () => {
-        setNombre('');
-        setApellido('');
-        setCorreo('');
-    }
-
-
     return (
-        <div className="content-ticket">
-            <h1>Tabla de Tickets</h1>
+        <div className={styles['ticket']}>
+            <Navbar />
+            <div className="agentes">
+                <h2>Tabla de agentes</h2>
+                <div className="tabla-agentes-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>id</th>
+                                <th>Agente</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {
+                            Object.entries(agentes).map(([id, nombre]) => (
+                                <tr key={id}>
+                                    <td>{id}</td>
+                                    <td>{nombre}</td>
+                                </tr>
+                            ))
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <h2>Tabla de Tickets</h2>
             <div className="table-content">
                 {notification && <div className="notification info-message">{notification}</div>}
                 {error && <div className="notification error-message">{error}</div>}
@@ -139,43 +132,6 @@ const Ticket = () => {
                     <tfoot>
                     </tfoot>
                 </table>
-            </div>
-            <div className="form-ticket-content">
-                <form onSubmit={handleForm}>
-                    <fieldset>
-                        <legend>Nuevo caso</legend>
-                        <label htmlFor="nombre">Nombre</label>
-                        <input
-                            type="text"
-                            id="nombre"
-                            name="nombre"
-                            placeholder="nombre"
-                            value={nombre}
-                            onChange={(e)=> setNombre(e.currentTarget.value)}
-                        />
-
-                        <label htmlFor="apellido">Apellido</label>
-                        <input
-                            type="text"
-                            id="apellido"
-                            name="apellido"
-                            placeholder="apellido"
-                            value={apellido}
-                            onChange={(e)=> setApellido(e.currentTarget.value)}
-                        />
-
-                        <label htmlFor="correo">Correo</label>
-                        <input
-                            type="email"
-                            id="correo"
-                            name="correo"
-                            placeholder="correo"
-                            value={correo}
-                            onChange={(e)=> setCorreo(e.currentTarget.value)}
-                        />
-                        <button type="submit">Crear</button>
-                    </fieldset>
-                </form>
             </div>
         </div>
     );

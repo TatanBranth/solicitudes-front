@@ -1,0 +1,40 @@
+.solicitudes {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 80%;
+}
+
+.solicitudes-table {
+    height: 350px;
+    overflow-y: auto;
+}
+
+.solicitudes-form {
+    min-width: 350px;
+    display: flex;
+    position: relative;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.solicitudes-form form {
+    min-width: 350px;
+}
+
+.solicitudes-form fieldset {
+    padding: 20px;
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.solicitudes-form fieldset input {
+    margin: 8px;
+    height: 35px;
+    width: 250px;
+}

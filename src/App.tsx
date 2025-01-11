@@ -4,9 +4,9 @@ import AppRoutes from './router/routes.tsx';
 function App() {
 
   return (
-    <>
+    <div className='app'>
       <AppRoutes />
-    </>
+    </div>
   )
 }
 

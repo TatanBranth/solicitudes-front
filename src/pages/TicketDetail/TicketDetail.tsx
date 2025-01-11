@@ -178,7 +178,7 @@ const TicketDetail = () => {
                     <button type="submit">Comentar</button>
                 </fieldset>
             </form>
-            <Link to="/">Volver</Link>
+            <Link to="/ticket">Volver</Link>
         </div>
     );
 }
