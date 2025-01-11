@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { show as showTicket } from '../../api/tickets';
 import { formatTimestamp } from "../../utils/dateFormatter.ts";
-import { index as showComments } from '../../api/tickets-comments';
+import { index as showComments, store as storeComments } from '../../api/tickets-comments';
 
 
 type solicitud = {
@@ -41,10 +41,19 @@ type comentario = {
     agente: agente;
 }
 
+type newTicketComment = {
+    agente_id: number;
+    comentario: string;
+}
+
 const TicketDetail = () => {
     const { id } = useParams();
     const [comentarios, setComentarios] = useState<comentario[]>([]);
     const [ticket, setTicket] = useState<ticket | null>(null);
+    const [formComentario, setFormComentario] = useState<newTicketComment>({
+        agente_id: 0,
+        comentario: ''
+    })
 
     useEffect(() => {
         if (!id) {
@@ -53,6 +62,7 @@ const TicketDetail = () => {
         showTicket(Number(id)).then((data:ticket) => {
             if (data) {
                 setTicket(data);
+                setFormComentario((prev) => ({...prev, agente_id: data.agente.id}))
             }
         });
 
@@ -63,10 +73,23 @@ const TicketDetail = () => {
         });
     }, [id]);
 
+    const handleComment = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (formComentario.comentario === '') {
+            return;
+        }
+
+        console.log(`nuevo comentario: ${JSON.stringify(formComentario)}`);
+        storeComments(Number(id), formComentario).then((data) => {
+            setComentarios((prev) => [...prev, data]);
+        });
+
+    }
+
     if (!ticket) return <div>Cargando...</div>;
 
     return (
-        <div>
+        <div className='ticket-detail-content'>
             <h1>Caso #{id}</h1>
             <div className="solicitud">
                 <h2>Solicitante:</h2>
@@ -93,7 +116,7 @@ const TicketDetail = () => {
                                 <tr key={row.id}>
                                     <td>{row.id}</td>
                                     <td>{row.comentario}</td>
-                                    <td>{row.agente.nombre}</td>
+                                    <td>{row.agente?.nombre || 'Sin agente'}</td>
                                 </tr>
                             )):
                             <tr key='no comentarios'>
@@ -105,6 +128,25 @@ const TicketDetail = () => {
                     </tfoot>
                 </table>
             </div>
+            <form onSubmit={handleComment}>
+                <fieldset className="form-comment">
+                    <legend>Nuevo comentario</legend>
+                    <div className='form-comment-fields'>
+                        <label htmlFor="comentario">Comentario: </label>
+                        <input
+                            type="text"
+                            id="comentario"
+                            name="comentario"
+                            placeholder="comentario"
+                            value={formComentario.comentario}
+                            onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
+                                setFormComentario((prev) => ({...prev, comentario: e.target.value}))
+                            }}
+                        />
+                        </div>
+                    <button type="submit">Comentar</button>
+                </fieldset>
+            </form>
             <Link to="/">Volver</Link>
         </div>
     );

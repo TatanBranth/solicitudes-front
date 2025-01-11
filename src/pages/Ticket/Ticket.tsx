@@ -98,7 +98,7 @@ const Ticket = () => {
 
 
     return (
-        <div className="content">
+        <div className="content-ticket">
             <h1>Tabla de Tickets</h1>
             <div className="table-content">
                 {notification && <div className="notification info-message">{notification}</div>}

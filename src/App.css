@@ -1,7 +1,25 @@
-.content {
+.content-ticket, .ticket-detail-content {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    margin: 20px;
+}
+
+
+.form-comment {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 300px;
+}
+
+.form-comment .form-comment-fields {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
 }
 
 /* tables */

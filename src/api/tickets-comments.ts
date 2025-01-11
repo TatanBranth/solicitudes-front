@@ -1,8 +1,24 @@
 const API_URL = 'http://127.0.0.1:8000/api';
 
+
+type agente = {
+    id: number;
+    nombre: string;
+}
+
 type newTicketComment = {
-    ticket_id: number;
+    agente_id: number;
     comentario: string;
+}
+
+type comentario = {
+    id: number;
+    ticket_id: number;
+    agent_id: number;
+    comentario: string;
+    created_at: string;
+    updated_at: string;
+    agente: agente;
 }
 
 export const index = async (id: number) => {
