@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { index as indexTickets } from "../../api/tickets.ts";
 import { index as indexAgentes } from "../../api/agente.ts";
 import { store as storeSolicitud } from "../../api/solicitudes.ts";
+import { Link } from 'react-router-dom';
 
 type Ticket = {
     id: number;
@@ -37,12 +38,6 @@ const Ticket = () => {
     const [nombre, setNombre] = useState<string>('');
     const [apellido, setApellido] = useState<string>('');
     const [correo, setCorreo] = useState<string>('');
-
-
-
-    const onRowClick = (row: Ticket) => {
-        console.log(row);
-    }
 
 
     useEffect(() => {
@@ -129,12 +124,13 @@ const Ticket = () => {
                             <th>Fecha cierre</th>
                             <th>Fecha creacion</th>
                             <th>Fecha actualizacion</th>
+                            <th>Ver detalle</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
                             tableData.map((row) => (
-                                <tr key={row.id} onClick={() => onRowClick(row)}>
+                                <tr key={row.id}>
                                     <td>{row.id}</td>
                                     <td>{row.solicitud_id}</td>
                                     <td>{getAgenteName(row.agente_id)}</td>
@@ -142,6 +138,11 @@ const Ticket = () => {
                                     <td>{row.fecha_cierre}</td>
                                     <td>{row.created_at ? formatTimestamp(row.created_at) : ''}</td>
                                     <td>{row.updated_at ? formatTimestamp(row.updated_at) : ''}</td>
+                                    <td>
+                                        <Link to={`/detail/${row.id}`}>
+                                            Detalle
+                                        </Link>
+                                    </td>
                                 </tr>
                             ))
                         }
